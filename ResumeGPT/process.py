@@ -6,7 +6,7 @@ from typing import Iterable, Optional
 import openai
 from PyPDF2 import PdfReader
 
-from .prompt import load_prompt_text, substitute_desired_positions
+from .prompts import load_prompt_text, substitute_desired_positions
 
 
 class ResumeProcessingError(RuntimeError):

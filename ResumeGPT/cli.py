@@ -4,7 +4,7 @@ import os
 import sys
 from typing import List, Optional
 
-from .core import process_resume_file
+from .process import process_resume_file
 
 
 def parse_args(argv: List[str]) -> argparse.Namespace:

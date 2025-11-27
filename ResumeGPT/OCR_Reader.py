@@ -1,16 +1,21 @@
 # import modules
 import os
-from PyPDF2 import PdfReader
+from pathlib import Path
+
 import pandas as pd
+from PyPDF2 import PdfReader
 from tqdm import tqdm
+
+from .helpers import output_paths
 
 
 # Define a class to read CVs from a directory
 class CVsReader:
     
     # Initialize the class with the directory path where CVs are located
-    def __init__(self, cvs_directory_path):
+    def __init__(self, cvs_directory_path, output_dir: str | Path | None = None):
         self.cvs_directory_path = cvs_directory_path
+        self.output_csv_path, _ = output_paths(output_dir)
 
 
     # Method to read new CV files from the given directory
@@ -20,7 +25,7 @@ class CVsReader:
         cvs_directory_path = self.cvs_directory_path
 
         # Store the path of the CSV file where previously extracted CVs are stored
-        previously_extracted_cvs_path = '../Output/CVs_Info_Extracted.csv'
+        previously_extracted_cvs_path = self.output_csv_path
 
         # Get a list of all files in the CVs directory
         all_cvs = os.listdir(cvs_directory_path)

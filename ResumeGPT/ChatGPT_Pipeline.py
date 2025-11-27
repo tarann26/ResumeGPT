@@ -1,39 +1,33 @@
 # import modules
-import os
-import pandas as pd
-import openai
-from openai import InvalidRequestError
-import time
 import json
+import time
 from json import JSONDecodeError
+from pathlib import Path
+
+import openai
+import pandas as pd
+from openai import InvalidRequestError
 from tqdm import tqdm
+
+from .helpers import output_paths
+from .prompts import load_prompt_text, substitute_desired_positions
+
 # add a progress bar to pandas operations
-tqdm.pandas(desc='CVs')
-
-# define the path to the output CSV file
-output_csv_file_path = '../Output/CVs_Info_Extracted.csv'
-
-# define the path to the output Excel file
-output_excel_file_path = '../Output/CVs_Info_Extracted.xlsx'
+tqdm.pandas(desc="CVs")
 
 
 # define a class to extract CV information
 class CVsInfoExtractor:
     # define a constructor that initializes the class with a DataFrame of CVs
-    def __init__(self, cvs_df, openai_api_key, desired_positions):
+    def __init__(self, cvs_df, openai_api_key, desired_positions, output_dir: str | Path | None = None):
         self.cvs_df = cvs_df
-        
-        # open a file in read mode and read the contents of the file into a variable
-        with open('../Engineered_Prompt/Prompt.txt', 'r') as file:
-            self.prompt = file.read()
-        
-        # Join the desired positions into a comma-separated string
-        suitable_positions_str = "(" + ", ".join(desired_positions) + ")"
 
-        # Replace the placeholder in the prompt with the formatted suitable positions string
-        self.prompt = self.prompt.replace('(suitable position for the candidate)', suitable_positions_str)
-        
-        
+        # build prompt text from bundled resource
+        base_prompt = load_prompt_text()
+        self.prompt = substitute_desired_positions(base_prompt, desired_positions)
+
+        self.output_csv_path, self.output_excel_path = output_paths(output_dir)
+
         # set the OpenAI API key
         openai.api_key = openai_api_key
 
@@ -88,14 +82,9 @@ class CVsInfoExtractor:
 
     # Defines internal function to write the DataFrame into a CSV file
     def _write_response_to_file(self, df):
-
-        # Checks if the output CSV file already exists
-        if os.path.isfile(output_csv_file_path):
-            # If the file exists, append the DataFrame into the CSV file without writing headers
-            df.to_csv(output_csv_file_path, mode='a', index=False, header=False)
-        else:
-            # If the file doesn't exist, write the DataFrame into a new CSV file
-            df.to_csv(output_csv_file_path, mode='w', index=False)
+        # Append if file exists; otherwise include headers
+        append = self.output_csv_path.exists()
+        df.to_csv(self.output_csv_path, mode="a" if append else "w", index=False, header=not append)
 
 
     # Define the internal function _gpt_pipeline
@@ -148,10 +137,10 @@ class CVsInfoExtractor:
     # Define the internal function _write_final_results_to_excel
     def _write_final_results_to_excel(self):
         # Load the CSV file into a pandas DataFrame
-        df_to_excel = pd.read_csv(output_csv_file_path)
+        df_to_excel = pd.read_csv(self.output_csv_path)
 
         # Write the DataFrame to an Excel file
-        df_to_excel.to_excel(output_excel_file_path)
+        df_to_excel.to_excel(self.output_excel_path)
 
         # Return the DataFrame
         return df_to_excel
