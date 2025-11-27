@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "resumegpt"
+version = "0.1.0"
+description = "Extract structured resume information using OpenAI chat models."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [{name = "ResumeGPT Contributors"}]
+dependencies = [
+    "openai>=0.27.7,<0.28",
+    "PyPDF2>=3.0,<4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "build",
+    "twine",
+    "pytest",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.scripts]
+resumegpt = "resumegpt.cli:main"
+
+[tool.setuptools]
+include-package-data = true
+packages = ["resumegpt"]
+
+[tool.setuptools.package-data]
+resumegpt = ["data/prompt.txt"]
