@@ -15,10 +15,10 @@ Information To Extract:
 12. Education PhD Graduation Date: date of graduation from PhD degree (in format: Month_Name, YYYY)
 13. Years of Experience: total years of experience in all jobs (Example: 3)
 14. Experience Companies: list of all companies that the candidate worked with (Example: [Company1, Company2])
-15. Top 5 Responsibilities/Projects Titles: list of top 5 responsibilities/projects titles that the candidate worked on (Example: [Project1, Project2, Project3, Project4, Project5])
-16. Top 5 Courses/Certifications Titles: list of top 5 courses/certifications titles that the candidate took (Example: [Course1, Course2, Course3, Course4, Course5])
-17. Top 3 Technical Skills: list of top 3 technical skills (Example: [Skill1, Skill2, Skill3])
-18. Top 3 Soft Skills: list of top 3 soft skills (Example: [Skill1, Skill2, Skill3])
+15. Responsibilities/Projects Titles: list all responsibilities/projects titles that the candidate worked on (Example: [Project1, Project2, Project3, Project4, Project5])
+16. Courses/Certifications Titles: list all courses/certifications titles that the candidate took (Example: [Course1, Course2, Course3, Course4, Course5])
+17. Technical Skills: list all technical skills (Example: [Skill1, Skill2, Skill3])
+18. Soft Skills: list all soft skills (Example: [Skill1, Skill2, Skill3])
 19. Current Employment Status: classify to one of the following (Full-time, Part-Time, Intern, Freelancer, Consultant, Unemployed)
 20. Nationality: nationality of the candidate
 21. Current Residence: where the candidate currently live
@@ -42,10 +42,10 @@ Desired Output: JSON format like the following:
 "Education PhD Graduation Date":"Information To Extract Number 12",
 "Years of Experience":"Information To Extract Number 13",
 "Experience Companies":"Information To Extract Number 14",
-"Top 5 Responsibilities/Projects":"Information To Extract Number 15",
-"Top 5 Courses/Certifications":"Information To Extract Number 16",
-"Top 3 Technical Skills":"Information To Extract Number 17",
-"Top 3 Soft Skills":"Information To Extract Number 18",
+"Responsibilities/Projects":"Information To Extract Number 15",
+"Courses/Certifications":"Information To Extract Number 16",
+"Technical Skills":"Information To Extract Number 17",
+"Soft Skills":"Information To Extract Number 18",
 "Current Employment Status":"Information To Extract Number 19",
 "Nationality":"Information To Extract Number 20",
 "Current Residence":"Information To Extract Number 21",
