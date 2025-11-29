@@ -15,6 +15,7 @@ Then call:
 curl -X POST http://localhost:8000/parse \
   -F "desired_positions=Data Scientist,Data Engineer" \
   -F "file=@/path/to/resume.pdf;type=application/pdf"
+# Note: keep the leading @ so curl uploads the file bytes, not the string literal.
 ```
 
 ## HTTP API
@@ -62,7 +63,7 @@ print(resp.json())
 
 ## What it extracts
 
-The model is prompted to return 23 fields:
+The model is prompted to return 23 fields (all returned as JSON keys, empty strings if missing):
 
 1. Education Bachelor University
 2. Education Bachelor GPA
@@ -78,10 +79,10 @@ The model is prompted to return 23 fields:
 12. Education PhD Graduation Date
 13. Years of Experience
 14. Experience Companies
-15. Top 5 Responsibilities/Projects Titles
-16. Top 5 Courses/Certifications Titles
-17. Top 3 Technical Skills
-18. Top 3 Soft Skills
+15. Responsibilities/Projects Titles (all)
+16. Courses/Certifications Titles (all)
+17. Technical Skills (all)
+18. Soft Skills (all)
 19. Current Employment Status
 20. Nationality
 21. Current Residence
@@ -89,6 +90,20 @@ The model is prompted to return 23 fields:
 23. Candidate Rating (Out of 10)
 
 If information is missing in the resume, fields should be empty strings.
+
+Example response shape (truncated):
+```json
+{
+  "Education Bachelor University": "State University",
+  "Education Bachelor GPA": "3.7",
+  "Years of Experience": "5",
+  "Experience Companies": ["Acme Corp", "Innotech"],
+  "Technical Skills": ["Python", "SQL", "AWS", "Airflow"],
+  "Responsibilities/Projects Titles": ["Built ETL pipeline", "Deployed ML model"],
+  "Suitable Position": "Data Scientist",
+  "Candidate Rating": "8"
+}
+```
 
 ## Configuration
 
