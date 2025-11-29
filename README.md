@@ -1,6 +1,6 @@
 # ResumeGPT
 
-ResumeGPT extracts structured information from resume PDFs using OpenAI chat models. It ships as an importable Python package and a lightweight CLI.
+ResumeGPT extracts structured information from resume PDFs using OpenAI chat models. It ships as an importable Python package, a lightweight CLI, and a FastAPI HTTP service for hosting.
 
 ## Install
 
@@ -8,6 +8,57 @@ ResumeGPT extracts structured information from resume PDFs using OpenAI chat mod
 pip install .
 ```
 (After publishing: `pip install resumegpt`.)
+
+## HTTP API
+
+- Endpoint: `POST /parse`
+- Request: `multipart/form-data` with fields:
+  - `file`: PDF file upload
+  - `desired_positions`: comma-separated list (e.g., `Data Scientist,Data Engineer`)
+- Response: JSON object containing the parsed fields (see “What it extracts”).
+
+Run locally:
+
+```bash
+OPENAI_API_KEY=sk-... uvicorn resumegpt.api:app --host 0.0.0.0 --port 8000
+# then call http://localhost:8000/parse
+```
+
+Examples:
+
+```bash
+curl -X POST http://localhost:8000/parse \
+  -F "desired_positions=Data Scientist,Data Engineer" \
+  -F "file=@/path/to/resume.pdf;type=application/pdf"
+```
+
+```js
+// browser/Node fetch
+const form = new FormData();
+form.append("desired_positions", "Data Scientist,Data Engineer");
+form.append("file", pdfFile); // File or Blob
+const res = await fetch("http://localhost:8000/parse", { method: "POST", body: form });
+const data = await res.json();
+```
+
+```python
+import requests
+
+files = {"file": ("resume.pdf", open("resume.pdf", "rb"), "application/pdf")}
+data = {"desired_positions": "Data Scientist,Data Engineer"}
+resp = requests.post("http://localhost:8000/parse", data=data, files=files)
+print(resp.json())
+```
+
+## Deploy on Render
+
+A `render.yaml` is included. Steps:
+1. Push this repo to your Git provider.
+2. In Render, create a Web Service from the repo. Render will read `render.yaml` to build and start:
+   - Build: `pip install -e .[dev]`
+   - Start: `uvicorn resumegpt.api:app --host 0.0.0.0 --port $PORT`
+3. Add environment variable `OPENAI_API_KEY` in the service settings.
+4. After deploy, call `https://<your-service>.onrender.com/parse` with the same multipart request shown above.
 
 ## Usage (Python)
 
