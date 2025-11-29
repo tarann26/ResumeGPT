@@ -23,7 +23,6 @@ Information To Extract:
 20. Nationality: nationality of the candidate
 21. Current Residence: where the candidate currently live
 22. Suitable Position: classify to one of the following suitable positions for the candidate (suitable position for the candidate)
-23. Candidate Rating (Out of 10): rate the candidate suitability for the classified position in point 19 (Example: 7.5)
 
 
 Desired Output: JSON format like the following:
@@ -49,8 +48,7 @@ Desired Output: JSON format like the following:
 "Current Employment Status":"Information To Extract Number 19",
 "Nationality":"Information To Extract Number 20",
 "Current Residence":"Information To Extract Number 21",
-"Suitable Position":"Information To Extract Number 22",
-"Candidate Rating (Out of 10)":"Information To Extract Number 23"}
+"Suitable Position":"Information To Extract Number 22"}
 ###
 
 Note: if any of the information is not mentioned in the cv, just leave it blank (empty string)

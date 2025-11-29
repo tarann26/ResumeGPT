@@ -23,7 +23,7 @@ curl -X POST http://localhost:8000/parse \
 - Endpoint: `POST /parse`
 - Request: `multipart/form-data` with fields:
   - `file`: PDF file upload
-  - `desired_positions`: comma-separated list (e.g., `Data Scientist,Data Engineer`)
+  - `desired_positions` (optional): comma-separated list (e.g., `Data Scientist,Data Engineer`)
 - Response: JSON object containing the parsed fields (see “What it extracts”).
 
 Examples:
@@ -37,7 +37,7 @@ curl -X POST http://localhost:8000/parse \
 ```js
 // browser/Node fetch
 const form = new FormData();
-form.append("desired_positions", "Data Scientist,Data Engineer");
+form.append("desired_positions", "Data Scientist,Data Engineer"); // optional
 form.append("file", pdfFile); // File or Blob
 const res = await fetch("http://localhost:8000/parse", { method: "POST", body: form });
 const data = await res.json();
@@ -47,7 +47,7 @@ const data = await res.json();
 import requests
 
 files = {"file": ("resume.pdf", open("resume.pdf", "rb"), "application/pdf")}
-data = {"desired_positions": "Data Scientist,Data Engineer"}
+data = {"desired_positions": "Data Scientist,Data Engineer"}  # optional
 resp = requests.post("http://localhost:8000/parse", data=data, files=files)
 print(resp.json())
 ```
@@ -63,7 +63,7 @@ print(resp.json())
 
 ## What it extracts
 
-The model is prompted to return 23 fields (all returned as JSON keys, empty strings if missing):
+The model is prompted to return 22 fields (all returned as JSON keys, empty strings if missing):
 
 1. Education Bachelor University
 2. Education Bachelor GPA
@@ -87,8 +87,6 @@ The model is prompted to return 23 fields (all returned as JSON keys, empty stri
 20. Nationality
 21. Current Residence
 22. Suitable Position (filled dynamically from your desired positions)
-23. Candidate Rating (Out of 10)
-
 If information is missing in the resume, fields should be empty strings.
 
 Example response shape (truncated):
@@ -100,8 +98,7 @@ Example response shape (truncated):
   "Experience Companies": ["Acme Corp", "Innotech"],
   "Technical Skills": ["Python", "SQL", "AWS", "Airflow"],
   "Responsibilities/Projects Titles": ["Built ETL pipeline", "Deployed ML model"],
-  "Suitable Position": "Data Scientist",
-  "Candidate Rating": "8"
+  "Suitable Position": "Data Scientist"
 }
 ```
 

@@ -16,14 +16,18 @@ app = FastAPI(title="ResumeGPT", version="0.1.0")
 @app.post("/parse")
 async def parse_resume(
     file: UploadFile = File(..., description="PDF file"),
-    desired_positions: str = Form(..., description="Comma-separated desired positions"),
+    desired_positions: str | None = Form(
+        None, description="Comma-separated desired positions (optional)"
+    ),
 ):
     """Parse a resume PDF and return extracted fields."""
     if file.content_type not in ("application/pdf", "application/octet-stream"):
         raise HTTPException(status_code=400, detail="Only PDF files are accepted")
 
     pdf_bytes = await file.read()
-    positions: List[str] = [p.strip() for p in desired_positions.split(",") if p.strip()]
+    positions: List[str] = []
+    if desired_positions:
+        positions = [p.strip() for p in desired_positions.split(",") if p.strip()]
 
     try:
         api_key = os.environ["OPENAI_API_KEY"]
