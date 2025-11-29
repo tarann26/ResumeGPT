@@ -1,13 +1,21 @@
 # ResumeGPT
 
-ResumeGPT extracts structured information from resume PDFs using OpenAI chat models. It ships as an importable Python package, a lightweight CLI, and a FastAPI HTTP service for hosting.
+ResumeGPT extracts structured information from resume PDFs using OpenAI chat models. This repo now provides only a FastAPI HTTP service for hosting.
 
-## Install
+## Quick start (local)
 
 ```bash
-pip install .
+pip install -r requirements.txt
+OPENAI_API_KEY=sk-... uvicorn resumegpt.api:app --host 0.0.0.0 --port 8000
 ```
-(After publishing: `pip install resumegpt`.)
+
+Then call:
+
+```bash
+curl -X POST http://localhost:8000/parse \
+  -F "desired_positions=Data Scientist,Data Engineer" \
+  -F "file=@/path/to/resume.pdf;type=application/pdf"
+```
 
 ## HTTP API
 
@@ -16,13 +24,6 @@ pip install .
   - `file`: PDF file upload
   - `desired_positions`: comma-separated list (e.g., `Data Scientist,Data Engineer`)
 - Response: JSON object containing the parsed fields (see “What it extracts”).
-
-Run locally:
-
-```bash
-OPENAI_API_KEY=sk-... uvicorn resumegpt.api:app --host 0.0.0.0 --port 8000
-# then call http://localhost:8000/parse
-```
 
 Examples:
 
@@ -50,37 +51,14 @@ resp = requests.post("http://localhost:8000/parse", data=data, files=files)
 print(resp.json())
 ```
 
-## Deploy on Render
+## Deploy on Railway
 
-A `render.yaml` is included. Steps:
 1. Push this repo to your Git provider.
-2. In Render, create a Web Service from the repo. Render will read `render.yaml` to build and start:
-   - Build: `pip install -e .[dev]`
-   - Start: `uvicorn resumegpt.api:app --host 0.0.0.0 --port $PORT`
-3. Add environment variable `OPENAI_API_KEY` in the service settings.
-4. After deploy, call `https://<your-service>.onrender.com/parse` with the same multipart request shown above.
-
-## Usage (Python)
-
-```python
-from resumegpt import process_resume
-
-with open("resume.pdf", "rb") as f:
-    pdf_bytes = f.read()
-
-result = process_resume(
-    pdf_bytes,
-    desired_positions=["Data Scientist", "Data Engineer"],
-    openai_api_key="sk-...",
-)
-print(result)
-```
-
-## Usage (CLI)
-
-```bash
-OPENAI_API_KEY=sk-... resumegpt path/to/resume.pdf "Data Scientist,Data Engineer" --pretty
-```
+2. Create a Railway service from the repo.
+3. Build command: `pip install -r requirements.txt`
+4. Start command: `uvicorn resumegpt.api:app --host 0.0.0.0 --port $PORT` (also in `Procfile`).
+5. Add environment variable `OPENAI_API_KEY` in the Railway dashboard.
+6. After deploy, call `https://<your-service>.up.railway.app/parse` with the multipart request shown above.
 
 ## What it extracts
 
@@ -114,24 +92,9 @@ If information is missing in the resume, fields should be empty strings.
 
 ## Configuration
 
-- Provide your OpenAI API key via `openai_api_key` (Python) or `OPENAI_API_KEY`/`--openai-api-key` (CLI).
-- `model` defaults to `gpt-3.5-turbo`; override to `gpt-4` if you have access.
-- `desired_positions` is a list (or comma-separated string in the CLI) used to tailor the prompt.
-
-## Development
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e .[dev]
-```
-
-Build and upload (from a clean tree):
-
-```bash
-python -m build
-twine upload dist/*
-```
+- Provide your OpenAI API key via `OPENAI_API_KEY`.
+- `model` defaults to `gpt-3.5-turbo`; override inside `resumegpt/process.py` if you need `gpt-4`.
+- `desired_positions` is the comma-separated string you pass in the request.
 
 ## License
 
