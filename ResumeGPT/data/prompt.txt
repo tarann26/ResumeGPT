@@ -22,7 +22,7 @@ Information To Extract:
 19. Current Employment Status: classify to one of the following (Full-time, Part-Time, Intern, Freelancer, Consultant, Unemployed)
 20. Nationality: nationality of the candidate
 21. Current Residence: where the candidate currently live
-22. Suitable Position: classify to one of the following suitable positions for the candidate (suitable position for the candidate)
+22. Suitable Position: classify to one of the following suitable positions for the candidate (suitable position for the candidate). If no suitable position is explicitly found, infer and fill the best-fitting position based on the resume content.
 
 
 Desired Output: JSON format like the following:
