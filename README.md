@@ -52,6 +52,25 @@ resp = requests.post("http://localhost:8000/parse", data=data, files=files)
 print(resp.json())
 ```
 
+## Deploy on Google Cloud Run
+
+1. Make sure these APIs are enabled in your project: Cloud Run, Cloud Build, and Artifact Registry.
+2. Build the container image:
+   ```bash
+   gcloud builds submit --tag gcr.io/<PROJECT_ID>/resumegpt
+   ```
+3. Deploy to Cloud Run:
+   ```bash
+   gcloud run deploy resumegpt \
+     --image gcr.io/<PROJECT_ID>/resumegpt \
+     --platform managed \
+     --region <REGION> \
+     --allow-unauthenticated \
+     --set-env-vars OPENAI_API_KEY=sk-...
+   ```
+   Replace `<PROJECT_ID>`, `<REGION>`, and `sk-...` with your values. Cloud Run will listen on port 8080 automatically.
+4. After deploy, call `https://<service-url>/parse` with the multipart request shown above.
+
 ## Deploy on Railway
 
 1. Push this repo to your Git provider.
